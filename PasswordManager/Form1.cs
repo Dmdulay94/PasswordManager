@@ -13,6 +13,7 @@ namespace PasswordManager
     public partial class Form1 : Form
     {
         SQLiteDatabase sql;
+        String password;
 
         public Form1()
         {
@@ -27,13 +28,12 @@ namespace PasswordManager
         private void button1_Click(object sender, EventArgs e)
         {
             string txt2 = textBox2.Text;
-            Boolean login = true;
             //Need Login Validation Function Here - Return True if Login Successful, Else declare incorrect password
             string file = FileDirectory.Text.ToString();
-            sql = new SQLiteDatabase(file);
-            if (login)
+            try
             {
-                if (file.Length > 1)
+                sql = new SQLiteDatabase(file,textBox2.Text);
+                if (sql.checkPass())
                 {
                     this.Hide();
                     Form2 f2 = new Form2(sql);
@@ -42,12 +42,12 @@ namespace PasswordManager
                 }
                 else
                 {
-                    MessageBox.Show("No Database Loaded");
+                    MessageBox.Show("Incorrect Password, Try Again.");
                 }
             }
-            else
+            catch
             {
-                MessageBox.Show("Incorrect Password");
+                MessageBox.Show("Bad File");
             }
         }
 
@@ -58,7 +58,7 @@ namespace PasswordManager
 
         private void textBox2_TextChanged(object sender, EventArgs e)
         {
-
+            password = textBox2.Text;
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -79,6 +79,13 @@ namespace PasswordManager
         private void FileDirectory_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+            Form3 form = new Form3();
+            form.Show();
+            this.Hide();
         }
     }
 }

@@ -26,21 +26,7 @@ namespace PasswordManager
             Form1 f1 = new Form1();
             f1.Close();
             TreeNode treeNode;
-            /*string[] x = new string[3];
-            x[0] = "Cat1";
-            x[1] = "Cat2";
-            x[2] = "Cat3";
-            foreach (string y in x)
-            {
-              treeNode = new TreeNode(y);
-              treeView1.Nodes.Add(treeNode);
-            }
-            TreeNode node2 = new TreeNode("C#");
-            TreeNode node3 = new TreeNode("VB.NET");
-            TreeNode[] array = new TreeNode[] { node2, node3 };
-            treeNode = new TreeNode("Dot Net Perls", array);
-            treeView1.Nodes.Add(treeNode);*/
-            DataTable pw = sql.GetDataTable("select * from t");
+            DataTable pw = sql.GetDataTable("select * from DatabaseTable");
             var table = pw.AsEnumerable().ToArray();
             x = table;
             foreach(var x in table)
