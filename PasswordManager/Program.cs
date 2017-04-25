@@ -104,7 +104,7 @@ namespace PasswordManager
         //String Variable for Database Connection
         SQLiteConnection dbConn;
         Crypt c;
-        String dbConnection;
+        string dbConnection;
         string password;
         //Basic Constructor
         public SQLiteDatabase()
@@ -112,22 +112,36 @@ namespace PasswordManager
             dbConnection = "Data Source = pw.s3db";
         }
         //SQLite Constructor (@params = (String) InputFile)
-        public SQLiteDatabase(string inputFile, string pw)
+        public SQLiteDatabase(string inputFile, string pw, string calledFrom)
         {
             //dbConnection = String.Format("Data Source = {0}", inputFile);
             dbConnection = "Data Source="+inputFile+";Version=3;";
+            if(calledFrom == "login")
+            {
+                dbConnection += "Password=" + pw;
+            } else if (calledFrom == "create")
+            {
+                dbConn = new SQLiteConnection(dbConnection);
+                dbConn.Open();
+                dbConn.ChangePassword(pw);
+                dbConn.Close();
+                dbConnection += "Password=" + pw;
+            } else
+            {
+                throw new ArgumentException();
+            }
             dbConn = new SQLiteConnection(dbConnection);
             this.password = pw;
             c = new Crypt();
         }
 
         //SQLite Constructor (@params = (Dictionary) Connection Options)
-        public SQLiteDatabase(Dictionary<String, String> connectionsOpts)
+        public SQLiteDatabase(Dictionary<string, string> connectionsOpts)
         {
-            String str = "";
-            foreach (KeyValuePair<String, String> row in connectionsOpts)
+            string str = "";
+            foreach (KeyValuePair<string, string> row in connectionsOpts)
             {
-                str += String.Format("{0}={1};", row.Key, row.Value);
+                str += string.Format("{0}={1};", row.Key, row.Value);
             }
             str = str.Trim().Substring(0, str.Length - 1);
             dbConnection = str;
@@ -147,16 +161,24 @@ namespace PasswordManager
 
         public bool checkPass()
         {
-            Boolean isCorrect = false;
-            DataTable pw = this.GetDataTable("select * from System");
+            bool isCorrect = false;
+            try
+            {
+                dbConn.Open();
+                isCorrect = true;
+                dbConn.Close();
+            }
+            catch
+            {
+            }
+            /*DataTable pw = this.GetDataTable("select * from System");
             var table = pw.AsEnumerable().ToArray();
             DataRow[] x = table;
-            Console.WriteLine((x[0][0]).ToString());
-            Console.WriteLine(c.getHash(this.password));
             if ((table[0][0]).ToString().Equals(c.getHash(this.password)))
             {
                 isCorrect = true;
             }
+            */
             return isCorrect;
         }
 
@@ -388,4 +410,5 @@ namespace PasswordManager
             Application.Run(new Form1());
         }
     }
+
 }

@@ -32,12 +32,12 @@ namespace PasswordManager
             string file = FileDirectory.Text.ToString();
             try
             {
-                sql = new SQLiteDatabase(file,textBox2.Text);
+                sql = new SQLiteDatabase(file,textBox2.Text, "login");
                 if (sql.checkPass())
                 {
                     this.Hide();
                     Form2 f2 = new Form2(sql);
-                    f2.Closed += (s, args) => this.Close();
+                    f2.Closed += (s, args) => this.Show();
                     f2.Show();
                 }
                 else
@@ -84,8 +84,9 @@ namespace PasswordManager
         private void button2_Click_1(object sender, EventArgs e)
         {
             Form3 form = new Form3();
-            form.Show();
+            form.Closed += (s, args) => this.Show();
             this.Hide();
+            form.Show();
         }
     }
 }

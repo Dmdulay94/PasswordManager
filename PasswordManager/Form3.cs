@@ -14,9 +14,9 @@ namespace PasswordManager
     public partial class Form3 : Form
     {
         SQLiteDatabase sql;
-        String databaseStringBuilder;
-        String tempPassword;
-        String confirm;
+        string databaseStringBuilder;
+        string tempPassword;
+        string confirm;
 
 
         public Form3()
@@ -28,30 +28,19 @@ namespace PasswordManager
         {
             if (tempPassword == confirm)
             {
-                databaseStringBuilder = FileDirectory.Text + "\\" + textBox2.Text + ".db";
+                databaseStringBuilder = FileDirectory.Text + "\\" + textBox2.Text + ".db3";
                 SQLiteConnection.CreateFile(databaseStringBuilder); 
-                sql = new SQLiteDatabase(databaseStringBuilder,tempPassword);
+                sql = new SQLiteDatabase(databaseStringBuilder,tempPassword, "create");
 
-                String cmd = "create table DatabaseTable(id INTEGER PRIMARY KEY AUTOINCREMENT, title VARCHAR2(25) NOT NULL, user VARCHAR2(150) NOT NULL, password VARCHAR2(150) NOT NULL);";
+                string cmd = "create table DatabaseTable(id INTEGER PRIMARY KEY AUTOINCREMENT, title VARCHAR2(25) NOT NULL, user VARCHAR2(150) NOT NULL, password VARCHAR2(150) NOT NULL);";
                 sql.ExecuteNonQuery(cmd);
                 cmd = "create table System(System VARCHAR2(150) PRIMARY KEY);";
                 sql.ExecuteNonQuery(cmd);
-                cmd = String.Format("insert into System values('{0}')", sql.getHash(tempPassword));
+                cmd = string.Format("insert into System values('{0}')", sql.getHash(tempPassword));
                 sql.ExecuteNonQuery(cmd);
 
-                string x = "password";
-                byte[] y = sql.encryptPass(x);
-                StringBuilder z = new StringBuilder();
-                foreach (byte b in y)
-                {
-                    z.Append(b.ToString("x2"));
-                }
-                Console.WriteLine(z.ToString());
-
-                string hy = sql.decryptPass(y);
-                Console.WriteLine(hy);
-
                 Form2 form = new Form2(sql);
+                form.Closed += (s, args) => this.Close();
                 form.Show();
                 this.Hide();
             }
@@ -87,6 +76,9 @@ namespace PasswordManager
         private void textBox4_TextChanged(object sender, EventArgs e)
         {
             confirm = textBox4.Text;
+        }
+        private void form_Closed(object sender, EventArgs e)
+        {
         }
     }
 }
