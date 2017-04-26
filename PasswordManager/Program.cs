@@ -34,7 +34,7 @@ namespace PasswordManager
             return newArray;
         }
 
-        public byte[] EncryptString(string toEncrypt, string key)
+        public string EncryptString(string toEncrypt, string key)
         {
             byte[] encryptionKey = Encoding.ASCII.GetBytes(key);
             if (encryptionKey.Length < 16)
@@ -59,13 +59,13 @@ namespace PasswordManager
                             cs.Write(toEncryptBytes, 0, toEncryptBytes.Length);
                             cs.FlushFinalBlock();
                         }
-                        return ms.ToArray();
+                        return Convert.ToBase64String(ms.ToArray());
                     }
                 }
             }
         }
 
-        public string DecryptString(byte[] encryptedString, string key)
+        public string DecryptString(string encryptedString, string key)
         {
             byte[] encryptionKey = Encoding.ASCII.GetBytes(key);
             if (encryptionKey.Length < 16)
@@ -75,12 +75,13 @@ namespace PasswordManager
             using (var provider = new AesCryptoServiceProvider())
             {
                 provider.Key = encryptionKey;
-                using (var ms = new MemoryStream(encryptedString))
+                using (var ms = new MemoryStream(Convert.FromBase64String(encryptedString)))
                 {
                     // Read the first 16 bytes which is the IV.
                     byte[] iv = new byte[16];
                     ms.Read(iv, 0, 16);
                     provider.IV = iv;
+                    provider.Padding = PaddingMode.PKCS7;
 
                     using (var decryptor = provider.CreateDecryptor())
                     {
@@ -152,11 +153,9 @@ namespace PasswordManager
             return c.getHash(password);
         }
 
-        public string decryptPass(byte[] encryptPass)
+        public string decryptPass(string encryptPass)
         {
-            string decode;
-            decode = c.DecryptString(encryptPass, password);
-            return decode;
+            return c.DecryptString(encryptPass, password);
         }
 
         public bool checkPass()
@@ -182,11 +181,9 @@ namespace PasswordManager
             return isCorrect;
         }
 
-        public byte[] encryptPass(string plaintextPass)
+        public string encryptPass(string plaintextPass)
         {
-            byte[] encode;
-            encode = c.EncryptString(plaintextPass, password);
-            return encode;
+            return c.EncryptString(plaintextPass, password);
         }
 
         public DataTable GetDataTable(string sql)
@@ -282,6 +279,33 @@ namespace PasswordManager
             {
                 columns += String.Format(" {0},", val.Key.ToString());
                 values += String.Format(" '{0}',", val.Value);
+            }
+            columns = columns.Substring(0, columns.Length - 1);
+            values = values.Substring(0, values.Length - 1);
+            try
+            {
+                this.ExecuteNonQuery(String.Format("insert into {0}({1}) values({2});", tableName, columns, values));
+            }
+            catch (Exception fail)
+            {
+                MessageBox.Show(fail.Message);
+                returnCode = false;
+            }
+            return returnCode;
+        }
+
+        public bool Insert(string tableName, List<string> columnList ,List<string> valueList)
+        {
+            string columns = "";
+            string values = "";
+            bool returnCode = true;
+            foreach (string val in columnList)
+            {
+                columns += String.Format(" '{0}',", val.ToString());
+            }
+            foreach (string val in valueList)
+            {
+                values += String.Format(" '{0}',", val.ToString());
             }
             columns = columns.Substring(0, columns.Length - 1);
             values = values.Substring(0, values.Length - 1);

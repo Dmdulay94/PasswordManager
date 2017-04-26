@@ -41,7 +41,7 @@
             // treeView1
             // 
             this.treeView1.Location = new System.Drawing.Point(16, 15);
-            this.treeView1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.treeView1.Margin = new System.Windows.Forms.Padding(4);
             this.treeView1.Name = "treeView1";
             this.treeView1.Size = new System.Drawing.Size(236, 291);
             this.treeView1.TabIndex = 0;
@@ -72,20 +72,21 @@
             // textBox1
             // 
             this.textBox1.Location = new System.Drawing.Point(373, 15);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBox1.Margin = new System.Windows.Forms.Padding(4);
             this.textBox1.Name = "textBox1";
+            this.textBox1.ReadOnly = true;
             this.textBox1.Size = new System.Drawing.Size(263, 22);
             this.textBox1.TabIndex = 3;
-            this.textBox1.ReadOnly = true;
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // textBox2
             // 
             this.textBox2.Location = new System.Drawing.Point(376, 53);
-            this.textBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBox2.Margin = new System.Windows.Forms.Padding(4);
             this.textBox2.Name = "textBox2";
+            this.textBox2.ReadOnly = true;
             this.textBox2.Size = new System.Drawing.Size(260, 22);
             this.textBox2.TabIndex = 4;
-            this.textBox2.ReadOnly = true;
             // 
             // addNew
             // 
@@ -130,7 +131,7 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.treeView1);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Form2";
             this.Text = "Password Manager";
             this.Load += new System.EventHandler(this.Form2_Load);

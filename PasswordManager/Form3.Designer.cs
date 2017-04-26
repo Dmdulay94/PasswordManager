@@ -44,7 +44,7 @@ namespace PasswordManager
             // FileDirectory
             // 
             this.FileDirectory.Location = new System.Drawing.Point(155, 34);
-            this.FileDirectory.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.FileDirectory.Margin = new System.Windows.Forms.Padding(4);
             this.FileDirectory.Name = "FileDirectory";
             this.FileDirectory.Size = new System.Drawing.Size(287, 22);
             this.FileDirectory.TabIndex = 0;
@@ -52,7 +52,7 @@ namespace PasswordManager
             // textBox2
             // 
             this.textBox2.Location = new System.Drawing.Point(155, 90);
-            this.textBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBox2.Margin = new System.Windows.Forms.Padding(4);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(287, 22);
             this.textBox2.TabIndex = 1;
@@ -61,7 +61,7 @@ namespace PasswordManager
             // textBox3
             // 
             this.textBox3.Location = new System.Drawing.Point(155, 140);
-            this.textBox3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBox3.Margin = new System.Windows.Forms.Padding(4);
             this.textBox3.Name = "textBox3";
             this.textBox3.PasswordChar = '*';
             this.textBox3.Size = new System.Drawing.Size(287, 22);
@@ -71,7 +71,7 @@ namespace PasswordManager
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(57, 254);
-            this.button1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.button1.Margin = new System.Windows.Forms.Padding(4);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(385, 28);
             this.button1.TabIndex = 3;
@@ -82,7 +82,7 @@ namespace PasswordManager
             // button2
             // 
             this.button2.Location = new System.Drawing.Point(37, 32);
-            this.button2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.button2.Margin = new System.Windows.Forms.Padding(4);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(100, 28);
             this.button2.TabIndex = 4;
@@ -123,7 +123,7 @@ namespace PasswordManager
             // textBox4
             // 
             this.textBox4.Location = new System.Drawing.Point(155, 190);
-            this.textBox4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBox4.Margin = new System.Windows.Forms.Padding(4);
             this.textBox4.Name = "textBox4";
             this.textBox4.PasswordChar = '*';
             this.textBox4.Size = new System.Drawing.Size(287, 22);
@@ -144,12 +144,12 @@ namespace PasswordManager
             this.Controls.Add(this.textBox3);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.FileDirectory);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Form3";
             this.Text = "Create Database";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.form_Closed);
             this.ResumeLayout(false);
             this.PerformLayout();
-            this.FormClosing += new FormClosingEventHandler(form_Closed);
 
         }
 
