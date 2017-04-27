@@ -55,17 +55,12 @@ namespace PasswordManager
             {
                 string encryptedPass = db.encryptPass(passBox.Text);
                 string encryptedUser = db.encryptPass(userBox.Text);
-                
-                List<string> columns = new List<string>();
-                columns.Add("title");
-                columns.Add("user");
-                columns.Add("password");
                 List<string> values = new List<string>();
                 values.Add(titleBox.Text);
                 values.Add(encryptedPass);
                 values.Add(encryptedUser);
 
-                db.Insert("DatabaseTable", columns, values);
+                db.submitPassword(values);
                 this.Close();
             }
         }

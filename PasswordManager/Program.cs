@@ -294,6 +294,29 @@ namespace PasswordManager
             return returnCode;
         }
 
+        public bool submitPassword(List<string> values)
+        {
+            bool result = false;
+            string[] value = values.ToArray();
+            if (value.Length > 3)
+            {
+                MessageBox.Show("Attempt to Corrupt Database Failed.");
+                return false;
+            }
+            try
+            {
+                this.ExecuteNonQuery(String.Format("Insert into DatabaseTable(title,user,password) values('{0}','{1}','{2}');", value[0],value[1],value[2]));
+                result = true;
+            }
+            catch (Exception failure)
+            {
+                MessageBox.Show(failure.Message);
+                result = false;
+            }
+            return result;
+        }
+
+
         public bool Insert(string tableName, List<string> columnList ,List<string> valueList)
         {
             string columns = "";
