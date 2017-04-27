@@ -115,7 +115,6 @@ namespace PasswordManager
         //SQLite Constructor (@params = (String) InputFile)
         public SQLiteDatabase(string inputFile, string pw, string calledFrom)
         {
-            //dbConnection = String.Format("Data Source = {0}", inputFile);
             dbConnection = "Data Source="+inputFile+";Version=3;";
             if(calledFrom == "login")
             {
@@ -158,26 +157,21 @@ namespace PasswordManager
             return c.DecryptString(encryptPass, password);
         }
 
+        //Checkpass calls a test query from the database.
+        //If it is encrypted the query will fail and return false, elsewise return true;
         public bool checkPass()
         {
             bool isCorrect = false;
             try
             {
-                dbConn.Open();
+                DataTable sample = this.GetDataTable("select * from DatabaseTable");
                 isCorrect = true;
-                dbConn.Close();
             }
             catch
             {
+                this.password = "";
+                dbConn.Close();
             }
-            /*DataTable pw = this.GetDataTable("select * from System");
-            var table = pw.AsEnumerable().ToArray();
-            DataRow[] x = table;
-            if ((table[0][0]).ToString().Equals(c.getHash(this.password)))
-            {
-                isCorrect = true;
-            }
-            */
             return isCorrect;
         }
 
@@ -201,7 +195,7 @@ namespace PasswordManager
             }
             catch (Exception e)
             {
-               throw new Exception(e.Message);
+                throw new Exception(e.Message);
             }
 
             return dt;
@@ -211,7 +205,6 @@ namespace PasswordManager
         {
             dbConn.Open();
             SQLiteCommand cmd = new SQLiteCommand(sql, dbConn);
-            //cmd.CommandText = sql;
             int rowsUpdated = cmd.ExecuteNonQuery();
             dbConn.Close();
             return rowsUpdated;
@@ -344,68 +337,6 @@ namespace PasswordManager
             return returnCode;
         }
 
-        /*public bool changePassword(string str)
-        {
-            bool result = false;
-            try
-            {
-                String tempString = dbConnection + "Password=" + str +";";
-                dbConn = new SQLiteConnection(tempString);
-                dbConn.ChangePassword(str);
-                result = true;
-                this.password = str;
-                dbConn.Open();
-            }
-            catch
-            {
-                result = false;
-            }
-            finally
-            {
-                dbConn.Close();
-            }
-            return result;
-        }
-
-        public bool setPassword(string str)
-        {
-            bool result = false;
-            dbConn.SetPassword(str);
-            this.password = str;
-            try
-            {
-                dbConn.Open();
-                using (SQLiteCommand command = new SQLiteCommand("PRAGMA schema_version;", dbConn))
-                {
-                    var ret = command.ExecuteScalar();
-                }
-                result = true;
-            }
-            catch(SQLiteException)
-            {
-                MessageBox.Show("Password Incorrect");
-                result = false;
-            }
-            finally
-            {
-                dbConn.Close();
-            }
-            return result;
-        }
-
-        public bool setPassword(string str, SQLiteConnection s)
-        {
-            try
-            {
-                s.SetPassword(str);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-        */
         public bool ClearDB()
         {
             DataTable tables;

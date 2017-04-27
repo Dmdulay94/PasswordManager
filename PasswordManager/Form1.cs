@@ -28,7 +28,6 @@ namespace PasswordManager
         private void button1_Click(object sender, EventArgs e)
         {
             string txt2 = textBox2.Text;
-            //Need Login Validation Function Here - Return True if Login Successful, Else declare incorrect password
             string file = FileDirectory.Text.ToString();
             try
             {
@@ -42,7 +41,7 @@ namespace PasswordManager
                 }
                 else
                 {
-                    MessageBox.Show("Incorrect Password, Try Again.");
+                    MessageBox.Show("Incorrect Password, Please Try Again.");
                 }
             }
             catch
