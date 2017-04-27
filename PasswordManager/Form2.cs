@@ -44,7 +44,10 @@ namespace PasswordManager
         {
 
         }
-
+        private void treeView1_MouseClick(object sender, MouseEventArgs e)
+        {
+            selectedNode = treeView1.SelectedNode;
+        }
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
             selectedNode = treeView1.SelectedNode;
@@ -94,6 +97,34 @@ namespace PasswordManager
         {
             //open new form and populate title, username, and password fields with current values
             //after fields are edited and OK is pressed, close form and update TreeView node + SQLite DB
+            Modify modify = new Modify(selectedNode);
+            modify.Closed += (s, args) => this.modifyAndUpdate();
+            modify.Show();
+        }
+
+        private void modifyAndUpdate()
+        {
+            RowRepresentation modified = (RowRepresentation)selectedNode.Tag;
+            foreach (TreeNode node in treeView1.Nodes)
+            {
+                
+                RowRepresentation row = (RowRepresentation)node.Tag;
+                if (modified.id == row.id)
+                {
+                    if (row.Title != node.Text)
+                    {
+                        node.Text = row.Title;
+                    }
+                    break;
+                }
+            }
+            Dictionary<string, string> updateDict = new Dictionary<string, string>();
+            updateDict.Add("title", modified.Title);
+            updateDict.Add("user", sql.encryptPass(modified.UserName));
+            updateDict.Add("password", sql.encryptPass(modified.Password));
+
+            sql.Update("DatabaseTable", updateDict, "id = " + modified.id.ToString());
+
         }
 
         private void deleteSelected_Click(object sender, EventArgs e)

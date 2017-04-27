@@ -425,10 +425,6 @@ namespace PasswordManager
         [STAThread]
         static void Main()
         {
-            Crypt c = new Crypt();
-            string password = "p";
-            Console.WriteLine(password);
-            Console.WriteLine(c.getHash(password));
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());
