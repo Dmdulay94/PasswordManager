@@ -44,13 +44,11 @@ namespace PasswordManager
         {
 
         }
-        private void treeView1_MouseClick(object sender, MouseEventArgs e)
-        {
-            selectedNode = treeView1.SelectedNode;
-        }
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            selectedNode = treeView1.SelectedNode;
+            selectedNode = e.Node;
+            textBox1.Text = ((RowRepresentation)selectedNode.Tag).UserName;
+            textBox2.Text = ((RowRepresentation)selectedNode.Tag).Password;
         }
 
         private void UpdateTreeView()
@@ -137,6 +135,11 @@ namespace PasswordManager
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label2_Click(object sender, EventArgs e)
         {
 
         }

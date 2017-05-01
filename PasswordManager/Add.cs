@@ -35,17 +35,9 @@ namespace PasswordManager
             {
                 MessageBox.Show("User must not be empty and shorter than 150");
             }
-            else if (passBox.TextLength < 8 || passBox.TextLength > 150)
+            else if (passBox.TextLength > 150)
             {
-                MessageBox.Show("Password has a minimum of 8 and a maximum of 150");
-            }
-            else if (!passBox.Text.Any(char.IsUpper))
-            {
-                MessageBox.Show("Password must contain at least one upper letter");
-            }
-            else if(!passBox.Text.Any(c => char.IsDigit(c)))
-            {
-                MessageBox.Show("Password must contain at least one number");
+                MessageBox.Show("Password has a maximum of 150");
             }
             else
             {
