@@ -9,11 +9,21 @@ using System.Windows.Forms;
 using System.IO;
 using System.Text;
 
+//PasswordManager Application
+//Created by Dewey Mitchem and Devin Dulay
+//CMSC 413 - Introduction to Cybersecurity
+//Release Date: 5/3/2017
+
 namespace PasswordManager
 {
+    //Public Encryption Helper Class - Crypt
+    //Class is based of the Cryptography DLL provided by C# using WinForms
+    //Class contains methods to encrypt/decrypt strings using AES with SHA-256
     public class Crypt
     {
-
+        //leftPad Method - Pads a given array of bytes with 0's on the left hand side.
+        //Takes one parameter (arr) - An array of bytes that lack the necessary space requirements
+        //Returns Byte Array with 0's padded to meet length requirements of key.
         private byte[] leftPad(byte[] arr)
         {
             var newArray = new byte[16];
@@ -22,6 +32,9 @@ namespace PasswordManager
             return newArray;
         }
 
+        //EncryptString Method - Encrypts a string with a given initial key. Key is translated from a string into an array of bytes.
+        //Takes two parameters - toEncrypt is the string to be encrypted, key is used for encryption/decryption
+        //Returns an encrypted string based off the parameters.
         public string EncryptString(string toEncrypt, string key)
         {
             byte[] encryptionKey = Encoding.ASCII.GetBytes(key);
@@ -53,6 +66,9 @@ namespace PasswordManager
             }
         }
 
+        //DecryptString Method - Decrypts a encrypted string with a given initial key.
+        //Takes two paramters - encryptedString is the ciphertext to be decrypted, key is used for encryption/decryption
+        //Returns the plaintext version of the encryptedString
         public string DecryptString(string encryptedString, string key)
         {
             byte[] encryptionKey = Encoding.ASCII.GetBytes(key);
@@ -87,16 +103,20 @@ namespace PasswordManager
 
 
     }
-
+    //Public Database Management Helper Class - SQLiteDatabase
+    //Class uses the SQLite DLL to assist with operations concerning SQLite Databases
+    //Instance of class will manage a connection, handle queries, and their respective returns
+    //Based off a generic Database helping class that update, insert, query tables.
+    //Includes custom methods to change and confirm valid passwords as well as ensure a connection has been terminated.
     public class SQLiteDatabase
     {
-        //String Variable for Database Connection
+        
         SQLiteConnection dbConn;
         SQLiteCommand cmd;
         Crypt c;
         string dbConnection;
         string password;
-        //SQLite Constructor (@params = (String) InputFile)
+        
         public SQLiteDatabase(string inputFile, string pw, string calledFrom)
         {
             dbConnection = "Data Source="+inputFile+";Version=3;";
@@ -173,6 +193,9 @@ namespace PasswordManager
             return c.EncryptString(plaintextPass, password);
         }
 
+        //Generic Database Method GetDataTable
+        //Takes one parameter sql - sql is string that represents a query that the database can run, e.g. "Select * from table"
+        //Returns a DataTable that contains the results from a SQL query
         public DataTable GetDataTable(string sql)
         {
             DataTable dt = new DataTable();
@@ -194,6 +217,9 @@ namespace PasswordManager
             return dt;
         }
 
+        //Generic Database Method ExecuteNonQuery
+        //Takes one parameter sql - sql is string that represents a query that the database can run that updates or deletes from a table promising no return, e.g. "delete * from table where id = 1"
+        //Returns an integer that represents the number of rows updated in the database
         public int ExecuteNonQuery(string sql)
         {
             dbConn.Open();
@@ -203,6 +229,9 @@ namespace PasswordManager
             return rowsUpdated;
         }
 
+        //Generic Database Method ExecuteQuery
+        //Takes one parameter sql - sql is string that represents a query that the database can run that updates or deletes from a table promising no return, e.g. "delete * from table where id = 1"
+        //Returns an integer that represents the number of rows updated in the database
         public string ExecuteScalar(string sql)
         {
             SQLiteConnection cnn = dbConn;
@@ -217,7 +246,10 @@ namespace PasswordManager
             }
             return "";
         }
-
+        //Custom Database Method Update
+        //Takes one parameter valueList - valueList is a list of strings that need to be updated in the database
+        //This method is used to update all the contents of the password manager table when a user changes the database (master) password
+        //Returns a boolean determining the success of the operation
         public bool Update(List<string> valueList)
         {
 
@@ -255,27 +287,11 @@ namespace PasswordManager
                 returnCode = false;
             }
             return returnCode;
-            //String vals = "";
-            //Boolean returnCode = true;
-            //if (data.Count >= 1)
-            //{
-            //    foreach (KeyValuePair<String, String> val in data)
-            //    {
-            //        vals += String.Format(" {0} = '{1}',", val.Key.ToString(), val.Value.ToString());
-            //    }
-            //    vals = vals.Substring(0, vals.Length - 1);
-            //}
-            //try
-            //{
-            //    this.ExecuteNonQuery(String.Format("update {0} set {1} where {2};", tableName, vals, where));
-            //}
-            //catch
-            //{
-            //    returnCode = false;
-            //}
-            //return returnCode;
         }
 
+        //Generic Database Method Delete
+        //Takes two parameters: tableName, where - tableName is targetted table, where is the string that represents the filter of the SQL statement
+        //Returns a boolean determining the success of the operation
         public bool Delete(String tableName, String where)
         {
             Boolean returnCode = true;
@@ -291,6 +307,9 @@ namespace PasswordManager
             return returnCode;
         }
 
+        //Custom Database Method Insert
+        //Takes one parameter valueList - valueList is a list of strings that need to be inserted into the database
+        //Returns a boolean determining the success of the operation
         public bool Insert(List<string> valueList)
         {
             bool returnCode = true;
@@ -326,6 +345,10 @@ namespace PasswordManager
             return returnCode;
         }
 
+
+        //Generic Database Method ClearDB
+        //Clears all the contents from the SQLite Database
+        //Returns a boolean representing the success of the operation
         public bool ClearDB()
         {
             DataTable tables;
@@ -344,6 +367,10 @@ namespace PasswordManager
             }
         }
 
+
+        //Generic Database Method Delete
+        //Takes one parameter table - the string table should represent the table that needs to be truncated of all its contents
+        //Returns a boolean representing the success of the operation
         public bool ClearTable(String table)
         {
             try

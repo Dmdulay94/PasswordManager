@@ -23,7 +23,7 @@ namespace PasswordManager
         {
 
         }
-
+        
         private void addButton_Click(object sender, EventArgs e)
         {
             bool valid = false;
