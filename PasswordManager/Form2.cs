@@ -15,12 +15,18 @@ namespace PasswordManager
         SQLiteDatabase sql;
         TreeNode selectedNode;
 
+        //Form2 accepts the authenticated connection from Form1
+        //sql will be used to generated nodes in Tree View that contain all the password information in the database
         public Form2(SQLiteDatabase db)
         {
             sql = db;
             InitializeComponent();
         }
 
+        //On the creation of Form2 - Create the nodes necessary for Tree View
+        //Queries the database for every entry in the DatabaseTable, inserts data into a DataTable
+        //table parses the DataTable into an array of DataRows
+        //Then each node of the Tree View is generated in a foreach function call where each node's properties are appropriately set and added to the tree.
         private void Form2_Load(object sender, EventArgs e)
         {
             TreeNode treeNode;
@@ -43,6 +49,7 @@ namespace PasswordManager
         private void label1_Click(object sender, EventArgs e)
         {
 
+        
         }
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
@@ -51,6 +58,9 @@ namespace PasswordManager
             textBox2.Text = ((RowRepresentation)selectedNode.Tag).Password;
         }
 
+        //Queries the database for every entry in the DatabaseTable, inserts data into a DataTable
+        //table parses the DataTable into an array of DataRows
+        //Only adds nodes that have not previously been entered into the Tree View, other nodes remain untouched and duplicates avoided.
         private void UpdateTreeView()
         {
             DataTable pw = sql.GetDataTable("select * from DatabaseTable");
@@ -74,6 +84,10 @@ namespace PasswordManager
             }
         }
 
+        //Clicking a node on the Tree View will update the Username and Password textboxes with their respective decrypted version
+        //All elements of the Tree View are stored as nodes of the tree to be accessed as the user needs them. Nodes have properties which contain the username, password, etc.
+        //Textbox1 is the Username Textbox
+        //Textbox2 is the Password Textbox
         private void treeView1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             TextBox txt = textBox1;
@@ -82,6 +96,7 @@ namespace PasswordManager
             txt2.Text = ((RowRepresentation)selectedNode.Tag).Password;
         }
 
+        //Calls the Add Form to allow the user to create a new password
         private void addNew_Click(object sender, EventArgs e)
         {
             //open new form with title, user, and password fields
@@ -91,6 +106,7 @@ namespace PasswordManager
             add.Show();
         }
 
+        //Calls the Modify Form to allow modification of entries in the database
         private void modifySelected_Click(object sender, EventArgs e)
         {
             //open new form and populate title, username, and password fields with current values
@@ -100,6 +116,8 @@ namespace PasswordManager
             modify.Show();
         }
 
+        //Updates the database and nodes with the newly modified contents of a particular chosen node
+        //This is called in the modifySelected_Click Function when the Modify Form is closed
         private void modifyAndUpdate()
         {
             RowRepresentation modified = (RowRepresentation)selectedNode.Tag;
@@ -133,6 +151,7 @@ namespace PasswordManager
 
         }
 
+        //Deletes a node from the database and the Tree View when the "Delete" button is clicked
         private void deleteSelected_Click(object sender, EventArgs e)
         {
             RowRepresentation row = (RowRepresentation)selectedNode.Tag;
@@ -152,6 +171,7 @@ namespace PasswordManager
 
         }
 
+        //When Form2 is being closed, the database connection will be terminated
         private void Form2_FormClosing(object sender, FormClosingEventArgs e)
         {
             sql.DisposeSQLite();

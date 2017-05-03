@@ -10,6 +10,8 @@ using System.Windows.Forms;
 
 namespace PasswordManager
 {
+    //Add Form
+    //Form used to create new passwords to be stored into the database
     public partial class Add : Form
     {
         SQLiteDatabase db;
@@ -24,6 +26,10 @@ namespace PasswordManager
 
         }
         
+        //Add Button
+        //Performs text checks before inserting the encrypted version of the username/password into the database
+        //If all the user plaintext meets criteria, the strings will be encrypted and submitted into the database
+        //Otherwise a Messagebox with the appropriate error will be shown
         private void addButton_Click(object sender, EventArgs e)
         {
             bool valid = false;

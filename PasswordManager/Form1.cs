@@ -10,6 +10,8 @@ using System.Windows.Forms;
 
 namespace PasswordManager
 {
+    //Form1 - Login Form
+    //Allows the user to Create a new database, Login to a current database, or change the password of a select database file
     public partial class Form1 : Form
     {
         SQLiteDatabase sql;
@@ -25,6 +27,10 @@ namespace PasswordManager
 
         }
 
+        //Button1 - Login Button
+        //Checks to make sure the password is valid for the database prior to continuing to Form2
+        //If the check fails, a MessageBox for an incorrect password is displayed
+        //If the file type is wrong and cannot be accessed, MessageBox for a bad file is displayed
         private void button1_Click(object sender, EventArgs e)
         {
             string txt2 = textBox2.Text;
@@ -62,6 +68,7 @@ namespace PasswordManager
             password = textBox2.Text;
         }
 
+        //File Directory Button - Gray Box
         private void button2_Click(object sender, EventArgs e)
         {
             OpenFileDialog of = new OpenFileDialog();
@@ -83,6 +90,8 @@ namespace PasswordManager
 
         }
 
+        //Button2 - "New" Database Button
+        //Opens Form3 in order to allow a new file to be created for the user
         private void button2_Click_1(object sender, EventArgs e)
         {
             Form3 form = new Form3();
@@ -91,6 +100,8 @@ namespace PasswordManager
             form.Show();
         }
 
+        //modifyPassword - Change Password Button
+        //Opens a Form to Modify the password of the database
         private void modifyPassword_Click(object sender, EventArgs e)
         {
             if(FileDirectory.Text == "")

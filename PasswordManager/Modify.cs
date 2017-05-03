@@ -10,9 +10,13 @@ using System.Windows.Forms;
 
 namespace PasswordManager
 {
+    //Modify Form
+    //Prompts the user to modify the contents of a selected node
+    //Once completed, the "Save" Button will send the user back to Form2 and update the contents of the Tree View.
     public partial class Modify : Form
     {
         TreeNode node;
+        
         public Modify(TreeNode nodeToModify)
         {
             node = nodeToModify;
@@ -32,6 +36,11 @@ namespace PasswordManager
             temp.Password = passBox.Text;
             node.Tag = temp;
             this.Close();
+        }
+
+        private void titleBox_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
