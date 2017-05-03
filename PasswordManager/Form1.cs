@@ -65,6 +65,7 @@ namespace PasswordManager
         private void button2_Click(object sender, EventArgs e)
         {
             OpenFileDialog of = new OpenFileDialog();
+            of.Filter = "SQLite DB (*.db3)|*.db3|All files (*.*)|*.*";
             DialogResult result = of.ShowDialog();
             if (result == DialogResult.OK)
                 {
