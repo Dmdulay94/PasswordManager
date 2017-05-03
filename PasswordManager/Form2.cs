@@ -31,8 +31,8 @@ namespace PasswordManager
                 RowRepresentation row = new RowRepresentation();
                 row.id = Int32.Parse(x[0].ToString());
                 row.Title = x[1].ToString();
-                row.UserName = sql.decryptPass(x[3].ToString());
-                row.Password = sql.decryptPass(x[2].ToString());
+                row.UserName = sql.decryptPass(x[2].ToString());
+                row.Password = sql.decryptPass(x[3].ToString());
                 treeNode = new TreeNode((x[1]).ToString());
                 
                 treeNode.Tag = row;
@@ -64,8 +64,8 @@ namespace PasswordManager
                     RowRepresentation newNodeTag = new RowRepresentation();
                     newNodeTag.id = Int32.Parse(row[0].ToString());
                     newNodeTag.Title = row[1].ToString();
-                    newNodeTag.UserName = sql.decryptPass(row[3].ToString());
-                    newNodeTag.Password = sql.decryptPass(row[2].ToString());
+                    newNodeTag.UserName = sql.decryptPass(row[2].ToString());
+                    newNodeTag.Password = sql.decryptPass(row[3].ToString());
                     TreeNode newNode = new TreeNode(row[1].ToString());
                     newNode.Tag = newNodeTag;
 
@@ -116,12 +116,12 @@ namespace PasswordManager
                     break;
                 }
             }
-            Dictionary<string, string> updateDict = new Dictionary<string, string>();
-            updateDict.Add("title", modified.Title);
-            updateDict.Add("user", sql.encryptPass(modified.UserName));
-            updateDict.Add("password", sql.encryptPass(modified.Password));
-
-            sql.Update("DatabaseTable", updateDict, "id = " + modified.id.ToString());
+            List<string> updateList = new List<string>();
+            updateList.Add(modified.Title);
+            updateList.Add(sql.encryptPass(modified.UserName));
+            updateList.Add(sql.encryptPass(modified.Password));
+            updateList.Add(modified.id.ToString());
+            sql.Update(updateList);
 
         }
 
@@ -142,6 +142,11 @@ namespace PasswordManager
         private void label2_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void Form2_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            sql.DisposeSQLite();
         }
     }
 }

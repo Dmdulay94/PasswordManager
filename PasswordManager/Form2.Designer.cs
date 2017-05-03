@@ -87,7 +87,7 @@
             // addNew
             // 
             this.addNew.Location = new System.Drawing.Point(218, 224);
-            this.addNew.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.addNew.Margin = new System.Windows.Forms.Padding(2);
             this.addNew.Name = "addNew";
             this.addNew.Size = new System.Drawing.Size(64, 19);
             this.addNew.TabIndex = 5;
@@ -98,7 +98,7 @@
             // modifySelected
             // 
             this.modifySelected.Location = new System.Drawing.Point(286, 224);
-            this.modifySelected.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.modifySelected.Margin = new System.Windows.Forms.Padding(2);
             this.modifySelected.Name = "modifySelected";
             this.modifySelected.Size = new System.Drawing.Size(90, 19);
             this.modifySelected.TabIndex = 6;
@@ -109,7 +109,7 @@
             // deleteSelected
             // 
             this.deleteSelected.Location = new System.Drawing.Point(381, 224);
-            this.deleteSelected.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.deleteSelected.Margin = new System.Windows.Forms.Padding(2);
             this.deleteSelected.Name = "deleteSelected";
             this.deleteSelected.Size = new System.Drawing.Size(88, 19);
             this.deleteSelected.TabIndex = 7;
@@ -132,6 +132,7 @@
             this.Controls.Add(this.treeView1);
             this.Name = "Form2";
             this.Text = "Password Manager";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form2_FormClosing);
             this.Load += new System.EventHandler(this.Form2_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

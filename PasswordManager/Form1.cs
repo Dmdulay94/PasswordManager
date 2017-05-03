@@ -34,6 +34,8 @@ namespace PasswordManager
                 sql = new SQLiteDatabase(file,textBox2.Text, "login");
                 if (sql.checkPass())
                 {
+                    FileDirectory.Text = "";
+                    textBox2.Text = "";
                     this.Hide();
                     Form2 f2 = new Form2(sql);
                     f2.Closed += (s, args) => this.Show();
@@ -86,6 +88,23 @@ namespace PasswordManager
             form.Closed += (s, args) => this.Show();
             this.Hide();
             form.Show();
+        }
+
+        private void modifyPassword_Click(object sender, EventArgs e)
+        {
+            if(FileDirectory.Text == "")
+            {
+                MessageBox.Show("Please select a database file.");
+            } else
+            {
+                ChangePassword form = new ChangePassword(FileDirectory.Text);
+                form.Closed += (s, args) => this.Show();
+                this.Hide();
+                form.Show();
+            }
+            //open a modify dbpassword form with current password, new password, confirm password
+            //get all usernames and passwords, unencrypt them with the current password, reencrypt them
+            //with new password, and update the table
         }
     }
 }

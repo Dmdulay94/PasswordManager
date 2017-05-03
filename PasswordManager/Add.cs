@@ -49,10 +49,10 @@ namespace PasswordManager
                 string encryptedUser = db.encryptPass(userBox.Text);
                 List<string> values = new List<string>();
                 values.Add(titleBox.Text);
-                values.Add(encryptedPass);
                 values.Add(encryptedUser);
+                values.Add(encryptedPass);
 
-                db.submitPassword(values);
+                db.Insert(values);
                 this.Close();
             }
         }

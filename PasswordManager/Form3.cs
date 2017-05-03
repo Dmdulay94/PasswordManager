@@ -34,10 +34,6 @@ namespace PasswordManager
 
                 string cmd = "create table DatabaseTable(id INTEGER PRIMARY KEY AUTOINCREMENT, title VARCHAR2(25) NOT NULL, user VARCHAR2(150) NOT NULL, password VARCHAR2(150) NOT NULL);";
                 sql.ExecuteNonQuery(cmd);
-                cmd = "create table System(System VARCHAR2(150) PRIMARY KEY);";
-                sql.ExecuteNonQuery(cmd);
-                cmd = string.Format("insert into System values('{0}')", sql.getHash(tempPassword));
-                sql.ExecuteNonQuery(cmd);
 
                 Form2 form = new Form2(sql);
                 form.Closed += (s, args) => this.Close();

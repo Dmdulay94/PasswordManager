@@ -14,18 +14,6 @@ namespace PasswordManager
     public class Crypt
     {
 
-        public string getHash(string key)
-        {
-            SHA256 mySHA256 = SHA256Managed.Create();
-            StringBuilder hash = new StringBuilder();
-            byte[] hashValue = mySHA256.ComputeHash(Encoding.UTF8.GetBytes(key));
-            foreach (byte b in hashValue)
-            {
-                hash.Append(b.ToString("x2"));
-            }
-            return hash.ToString();
-        }
-
         private byte[] leftPad(byte[] arr)
         {
             var newArray = new byte[16];
@@ -104,29 +92,31 @@ namespace PasswordManager
     {
         //String Variable for Database Connection
         SQLiteConnection dbConn;
+        SQLiteCommand cmd;
         Crypt c;
         string dbConnection;
         string password;
-        //Basic Constructor
-        public SQLiteDatabase()
-        {
-            dbConnection = "Data Source = pw.s3db";
-        }
         //SQLite Constructor (@params = (String) InputFile)
         public SQLiteDatabase(string inputFile, string pw, string calledFrom)
         {
             dbConnection = "Data Source="+inputFile+";Version=3;";
-            if(calledFrom == "login")
+            if (calledFrom == "login")
             {
                 dbConnection += "Password=" + pw;
-            } else if (calledFrom == "create")
+            }
+            else if (calledFrom == "create")
             {
                 dbConn = new SQLiteConnection(dbConnection);
                 dbConn.Open();
                 dbConn.ChangePassword(pw);
                 dbConn.Close();
                 dbConnection += "Password=" + pw;
-            } else
+            }
+            else if (calledFrom == "changePassword")
+            {
+                dbConnection += "Password=" + pw;
+            }
+            else
             {
                 throw new ArgumentException();
             }
@@ -135,28 +125,30 @@ namespace PasswordManager
             c = new Crypt();
         }
 
-        //SQLite Constructor (@params = (Dictionary) Connection Options)
-        public SQLiteDatabase(Dictionary<string, string> connectionsOpts)
+        public void ChangePassword(string newPassword)
         {
-            string str = "";
-            foreach (KeyValuePair<string, string> row in connectionsOpts)
-            {
-                str += string.Format("{0}={1};", row.Key, row.Value);
-            }
-            str = str.Trim().Substring(0, str.Length - 1);
-            dbConnection = str;
-        }
-
-        public string getHash(string password)
-        {
-            return c.getHash(password);
+            dbConn.Open();
+            dbConn.ChangePassword(newPassword);
+            dbConn.Close();
         }
 
         public string decryptPass(string encryptPass)
         {
             return c.DecryptString(encryptPass, password);
         }
+        //Kills connection and relinquishes lock on db file
+        public void DisposeSQLite()
+        {
+            dbConn.Dispose();
+            try {
+                cmd.Dispose();
+            } catch(Exception e)
+            {
 
+            }
+            
+            GC.Collect();
+        }
         //Checkpass calls a test query from the database.
         //If it is encrypted the query will fail and return false, elsewise return true;
         public bool checkPass()
@@ -164,6 +156,7 @@ namespace PasswordManager
             bool isCorrect = false;
             try
             {
+
                 DataTable sample = this.GetDataTable("select * from DatabaseTable");
                 isCorrect = true;
             }
@@ -225,27 +218,62 @@ namespace PasswordManager
             return "";
         }
 
-        public bool Update(String tableName, Dictionary<String, String> data, String where)
+        public bool Update(List<string> valueList)
         {
-            String vals = "";
-            Boolean returnCode = true;
-            if (data.Count >= 1)
+
+            bool returnCode = true;
+            cmd = dbConn.CreateCommand();
+            cmd.CommandText = "update DatabaseTable set title = @title, user = @user, password = @password where id = @id";
+            for (int i = 0; i < valueList.Count; i++)
             {
-                foreach (KeyValuePair<String, String> val in data)
+                switch (i)
                 {
-                    vals += String.Format(" {0} = '{1}',", val.Key.ToString(), val.Value.ToString());
+                    case 0:
+                        cmd.Parameters.Add("@title", DbType.AnsiString).Value = valueList[0];
+                        continue;
+                    case 1:
+                        cmd.Parameters.Add("@user", DbType.AnsiString).Value = valueList[1];
+                        continue;
+                    case 2:
+                        cmd.Parameters.Add("@password", DbType.AnsiString).Value = valueList[2];
+                        continue;
+                    case 3:
+                        cmd.Parameters.Add("@id", DbType.AnsiString).Value = valueList[3];
+                        break;
                 }
-                vals = vals.Substring(0, vals.Length - 1);
             }
             try
             {
-                this.ExecuteNonQuery(String.Format("update {0} set {1} where {2};", tableName, vals, where));
+                dbConn.Open();
+                cmd.CommandType = CommandType.Text;
+                cmd.ExecuteNonQuery();
+                dbConn.Close();
             }
-            catch
+            catch (Exception fail)
             {
+                MessageBox.Show(fail.Message);
                 returnCode = false;
             }
             return returnCode;
+            //String vals = "";
+            //Boolean returnCode = true;
+            //if (data.Count >= 1)
+            //{
+            //    foreach (KeyValuePair<String, String> val in data)
+            //    {
+            //        vals += String.Format(" {0} = '{1}',", val.Key.ToString(), val.Value.ToString());
+            //    }
+            //    vals = vals.Substring(0, vals.Length - 1);
+            //}
+            //try
+            //{
+            //    this.ExecuteNonQuery(String.Format("update {0} set {1} where {2};", tableName, vals, where));
+            //}
+            //catch
+            //{
+            //    returnCode = false;
+            //}
+            //return returnCode;
         }
 
         public bool Delete(String tableName, String where)
@@ -263,71 +291,32 @@ namespace PasswordManager
             return returnCode;
         }
 
-        public bool Insert(String tableName, Dictionary<String, String> data)
+        public bool Insert(List<string> valueList)
         {
-            String columns = "";
-            String values = "";
-            Boolean returnCode = true;
-            foreach (KeyValuePair<String, String> val in data)
-            {
-                columns += String.Format(" {0},", val.Key.ToString());
-                values += String.Format(" '{0}',", val.Value);
-            }
-            columns = columns.Substring(0, columns.Length - 1);
-            values = values.Substring(0, values.Length - 1);
-            try
-            {
-                this.ExecuteNonQuery(String.Format("insert into {0}({1}) values({2});", tableName, columns, values));
-            }
-            catch (Exception fail)
-            {
-                MessageBox.Show(fail.Message);
-                returnCode = false;
-            }
-            return returnCode;
-        }
-
-        public bool submitPassword(List<string> values)
-        {
-            bool result = false;
-            string[] value = values.ToArray();
-            if (value.Length > 3)
-            {
-                MessageBox.Show("Attempt to Corrupt Database Failed.");
-                return false;
-            }
-            try
-            {
-                this.ExecuteNonQuery(String.Format("Insert into DatabaseTable(title,user,password) values('{0}','{1}','{2}');", value[0],value[1],value[2]));
-                result = true;
-            }
-            catch (Exception failure)
-            {
-                MessageBox.Show(failure.Message);
-                result = false;
-            }
-            return result;
-        }
-
-
-        public bool Insert(string tableName, List<string> columnList ,List<string> valueList)
-        {
-            string columns = "";
-            string values = "";
             bool returnCode = true;
-            foreach (string val in columnList)
+            cmd = dbConn.CreateCommand();
+            cmd.CommandText = "insert into DatabaseTable (title, user, password) VALUES(@title,@user,@password)";
+            for(int i = 0; i < valueList.Count; i++)
             {
-                columns += String.Format(" '{0}',", val.ToString());
+                switch(i)
+                {
+                    case 0:
+                        cmd.Parameters.Add("@title", DbType.AnsiString).Value = valueList[0];
+                        continue;
+                    case 1:
+                        cmd.Parameters.Add("@user", DbType.AnsiString).Value = valueList[1];
+                        continue;
+                    case 2:
+                        cmd.Parameters.Add("@password", DbType.AnsiString).Value = valueList[2];
+                        break;
+                }
             }
-            foreach (string val in valueList)
-            {
-                values += String.Format(" '{0}',", val.ToString());
-            }
-            columns = columns.Substring(0, columns.Length - 1);
-            values = values.Substring(0, values.Length - 1);
             try
             {
-                this.ExecuteNonQuery(String.Format("insert into {0}({1}) values({2});", tableName, columns, values));
+                dbConn.Open();
+                cmd.CommandType = CommandType.Text;
+                cmd.ExecuteNonQuery();
+                dbConn.Close();
             }
             catch (Exception fail)
             {
