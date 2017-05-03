@@ -113,6 +113,14 @@ namespace PasswordManager
                     {
                         node.Text = row.Title;
                     }
+                    if (textBox1.Text != row.UserName)
+                    {
+                        textBox1.Text = row.UserName;
+                    }
+                    if (textBox2.Text != row.Password)
+                    {
+                        textBox2.Text = row.Password;
+                    }
                     break;
                 }
             }
